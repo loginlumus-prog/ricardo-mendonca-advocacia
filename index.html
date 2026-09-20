@@ -89,7 +89,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .capa-veu{position:absolute;inset:0;background:
   linear-gradient(90deg,rgba(10,13,20,.96) 0%,rgba(10,13,20,.84) 38%,rgba(10,13,20,.24) 72%,rgba(10,13,20,.46) 100%),
   linear-gradient(0deg,rgba(10,13,20,.92) 0%,rgba(10,13,20,0) 46%)}
-.capa-txt{position:relative;width:100%;padding-top:150px;padding-bottom:64px;max-width:820px}
+/* `gut` e `limite` no MESMO elemento somam padding dentro do max-width e o
+   bloco sai deslocado do resto da página. Aqui o gut fica no invólucro e o
+   limite no miolo, igual às seções; a largura do texto vem dos filhos. */
+.capa-txt{position:relative;width:100%;padding-top:150px;padding-bottom:64px}
+.capa-txt .limite > *{max-width:820px}
 .capa-h{font-family:var(--serif);font-weight:300;font-size:clamp(36px,6vw,74px);line-height:1.06;letter-spacing:-.015em;margin-top:20px}
 .capa-h em{font-style:italic;color:var(--prata-luz)}
 .capa-p{margin-top:22px;color:var(--fumo);font-size:clamp(15px,1.4vw,17px);max-width:54ch;line-height:1.75}
@@ -102,7 +106,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* ══════ RÉGUA DE NÚMEROS ══════ */
 .regua{display:flex;flex-wrap:wrap;border-top:1px solid var(--fio);background:var(--breu)}
-.regua-i{flex:1 1 200px;padding:24px var(--gut);border-right:1px solid var(--fio);display:flex;flex-direction:column;gap:4px}
+.regua-i{flex:1 1 200px;padding:24px clamp(20px,5vw,80px);border-right:1px solid var(--fio);display:flex;flex-direction:column;gap:4px}
 .regua-i:last-child{border-right:0}
 .regua-n{font-family:var(--serif);font-size:32px;font-weight:300;color:var(--prata-luz);line-height:1;font-variant-numeric:tabular-nums}
 .regua-r{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--fumo-fraco)}
@@ -129,7 +133,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .faixa{position:relative;height:clamp(260px,40vw,480px);overflow:hidden;border-top:1px solid var(--fio);border-bottom:1px solid var(--fio)}
 .faixa-img{position:absolute;inset:0;background-size:cover;background-position:center;filter:saturate(.5) brightness(.44)}
 .faixa-veu{position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,13,20,.94),rgba(10,13,20,.6) 62%,rgba(10,13,20,.8))}
-.faixa-txt{position:relative;height:100%;display:flex;flex-direction:column;justify-content:center;gap:14px;max-width:640px}
+.faixa-txt{position:relative;height:100%;display:flex;align-items:center}
+.faixa-txt .limite{width:100%}
+.faixa-cx{display:flex;flex-direction:column;gap:14px;max-width:640px}
 
 /* ══════ SÓCIOS ══════ */
 .socios{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--fio);border:1px solid var(--fio);margin-top:46px}
@@ -208,17 +214,19 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <section class="capa">
   <div class="capa-img" aria-hidden="true"></div>
   <div class="capa-veu" aria-hidden="true"></div>
-  <div class="capa-txt gut limite">
-    <span class="chapeu sobe">Desde 1996 &middot; Salvador, Bahia</span>
-    <h1 class="capa-h sobe">Trinta anos de<br>Direito Bancário e<br><em>Recuperação de Crédito.</em></h1>
-    <p class="capa-p sobe">
-      Assessoria e representação de instituições financeiras e empresas na condução de
-      demandas bancárias, recuperação de créditos e ativos, gestão de carteiras e
-      contencioso estratégico.
-    </p>
-    <div class="capa-acao sobe">
-      <a class="bt forte" href="#contato">Falar com o escritório</a>
-      <a class="bt" href="#areas">Áreas de atuação</a>
+  <div class="capa-txt gut">
+    <div class="limite">
+      <span class="chapeu sobe">Desde 1996 &middot; Salvador, Bahia</span>
+      <h1 class="capa-h sobe">Trinta anos de<br>Direito Bancário e<br><em>Recuperação de Crédito.</em></h1>
+      <p class="capa-p sobe">
+        Assessoria e representação de instituições financeiras e empresas na condução de
+        demandas bancárias, recuperação de créditos e ativos, gestão de carteiras e
+        contencioso estratégico.
+      </p>
+      <div class="capa-acao sobe">
+        <a class="bt forte" href="#contato">Falar com o escritório</a>
+        <a class="bt" href="#areas">Áreas de atuação</a>
+      </div>
     </div>
   </div>
 </section>
@@ -265,7 +273,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 <div class="faixa">
   <div class="faixa-img" style="background-image:url(img/autos.jpg)" aria-hidden="true"></div>
   <div class="faixa-veu" aria-hidden="true"></div>
-  <div class="faixa-txt gut limite" style="width:100%">
+  <div class="faixa-txt gut">
+    <div class="limite"><div class="faixa-cx">
     <span class="chapeu">Nosso propósito</span>
     <p class="olho" style="font-size:clamp(22px,2.8vw,34px)">
       Compreender cada demanda em sua dimensão jurídica <em>e prática.</em>
@@ -274,6 +283,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
       Identificar riscos, oportunidades e caminhos possíveis para alcançar soluções
       adequadas aos objetivos de cada cliente.
     </p>
+    </div></div>
   </div>
 </div>
 
