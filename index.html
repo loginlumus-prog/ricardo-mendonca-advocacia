@@ -167,11 +167,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .socio{background:var(--breu);display:flex;flex-direction:column}
 .socio-foto{
   position:relative;aspect-ratio:3/4;overflow:hidden;
-  background:linear-gradient(175deg,var(--marinho-alto),var(--breu) 78%);
+  background:var(--marinho-alto); /* só aparece enquanto a foto carrega */
 }
 .socio-foto img{
   width:100%;height:100%;object-fit:cover;object-position:top center;
-  filter:saturate(.82) contrast(1.02);
+  filter:saturate(.96);
   transition:transform .9s cubic-bezier(.16,1,.3,1);
 }
 .socio:hover .socio-foto img{transform:scale(1.035)}

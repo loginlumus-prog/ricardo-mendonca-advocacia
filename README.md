@@ -11,19 +11,28 @@ Recuperação de Crédito, com sede em Salvador/BA.
 
 ## Sobre as imagens
 
-Os quatro retratos dos sócios chegaram com fundos diferentes entre si — e o do
-Ricardo tinha livros em inglês ("Constitution", "Civil Procedure"), enquanto a
-foto de grupo está em português. Lado a lado num site isso denuncia.
+Os retratos que o cliente enviou tinham cada um um cenário diferente, e o do
+Ricardo trazia livros em inglês ("Constitution", "Civil Procedure") enquanto a
+foto de grupo estava em português. Lado a lado num site, isso denuncia.
 
-Solução: os retratos foram recortados e colocados sobre um mesmo fundo escuro,
-que é o tratamento usado por Mattos Filho e Pinheiro Neto. Resolve a
-inconsistência e dá unidade à página de sócios.
+Os quatro retratos foram **regerados com Seedream 5 Pro** usando a foto original
+de cada um como referência de rosto: mesma pessoa, mesma roupa, mas com
+iluminação de estúdio (chave suave à esquerda, contraluz prata) e o mesmo fundo
+grafite-marinho para todos. O resultado lê como um ensaio único, feito pelo
+mesmo fotógrafo no mesmo dia.
+
+A foto de grupo também foi regerada, com os quatro rostos como referência, num
+escritório ao anoitecer com a cidade ao fundo — profundidade real em vez de
+quatro pessoas enfileiradas.
 
 O selo de 30 anos veio em azul-marinho sobre transparente, invisível num site
 escuro. Foi convertido para prata preservando o traço.
 
 As três imagens de ambiente (capa, autos, textura) foram geradas sob direção de
 arte para a paleta da marca: marinho e prata, frio e institucional.
+
+Os arquivos originais do cliente estão preservados em `midia/original/`.
+
 
 ## Conformidade com a OAB
 
