@@ -1,0 +1,98 @@
+/* ============================================================
+   PAINEL — área interna
+   Herda os tokens de site.css. Mais denso que o site público:
+   aqui ninguém está lendo, está operando.
+   ============================================================ */
+
+body.painel{background:var(--breu)}
+
+/* ══════ ENTRADA ══════ */
+.entrada{min-height:100svh;display:grid;place-items:center;padding:24px}
+.entrada-cx{width:100%;max-width:400px;border:1px solid var(--fio);background:var(--marinho);padding:clamp(28px,5vw,40px)}
+.entrada-cx img{height:46px;width:auto;margin-bottom:26px}
+.entrada-h{font-family:var(--serif);font-size:27px;font-weight:300;line-height:1.2}
+.entrada-p{font-size:13px;color:var(--fumo);margin-top:8px;line-height:1.7}
+
+/* ══════ FORMULÁRIO ══════ */
+.campo{display:flex;flex-direction:column;gap:6px;margin-top:18px}
+.campo label{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--fumo-fraco)}
+.campo input,.campo textarea,.campo select{
+  background:transparent;border:1px solid var(--fio);padding:11px 13px;
+  color:var(--marfim);font:inherit;font-size:14px;width:100%;
+}
+.campo textarea{resize:vertical;min-height:120px;line-height:1.7}
+.campo input:focus,.campo textarea:focus,.campo select:focus{outline:0;border-color:var(--prata)}
+.campo .dica{font-size:11.5px;color:var(--fumo-fraco);line-height:1.6}
+.campo select option{background:var(--marinho)}
+
+.recado{padding:11px 14px;font-size:12.5px;line-height:1.6;border:1px solid var(--fio);margin-top:16px}
+.recado.erro{border-color:var(--erro);color:var(--erro)}
+.recado.ok{border-color:var(--ok);color:var(--ok)}
+.recado[hidden]{display:none}
+
+/* ══════ ESTRUTURA ══════ */
+.painel-topo{
+  position:sticky;top:0;z-index:40;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:16px clamp(16px,4vw,44px);
+  background:rgba(10,13,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--fio);
+}
+.painel-topo img{height:30px;width:auto}
+.painel-quem{display:flex;align-items:center;gap:14px;font-size:12.5px;color:var(--fumo)}
+.painel-corpo{padding:clamp(24px,4vw,44px);max-width:1100px;margin:0 auto}
+
+.painel-cab{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--fio);margin-bottom:26px}
+.painel-h{font-family:var(--serif);font-size:clamp(25px,3vw,34px);font-weight:300;line-height:1.15}
+
+/* ══════ LISTA DE ARTIGOS ══════ */
+.lista{display:flex;flex-direction:column;border-top:1px solid var(--fio)}
+.linha{display:grid;grid-template-columns:72px 1fr auto auto;gap:18px;align-items:center;padding:14px 0;border-bottom:1px solid var(--fio)}
+@media (max-width:700px){
+  .linha{grid-template-columns:56px 1fr;gap:12px}
+  .linha-acao{grid-column:1/-1;justify-content:flex-start}
+  .linha-data{grid-column:2;justify-self:start}
+}
+.linha-mini{width:72px;height:48px;object-fit:cover;background:var(--marinho-alto);border:1px solid var(--fio)}
+@media (max-width:700px){.linha-mini{width:56px;height:40px}}
+.linha-tit{font-family:var(--serif);font-size:19px;font-weight:400;line-height:1.25}
+.linha-sub{font-size:11.5px;color:var(--fumo-fraco);margin-top:3px}
+.linha-data{font-size:11.5px;color:var(--fumo-fraco);letter-spacing:.08em;white-space:nowrap}
+.linha-acao{display:flex;gap:8px}
+
+.selo-e{font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:2px 7px;border:1px solid var(--fio)}
+.selo-e.publicado{color:var(--ok);border-color:rgba(127,160,124,.5)}
+.selo-e.rascunho{color:var(--fumo-fraco)}
+
+/* ══════ EDITOR ══════ */
+.editor{display:grid;grid-template-columns:1fr 300px;gap:clamp(24px,4vw,44px);align-items:start}
+@media (max-width:900px){.editor{grid-template-columns:1fr}}
+.editor-lado{border:1px solid var(--fio);padding:20px}
+.editor-lado h4{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--fumo-fraco);margin-bottom:6px}
+
+/* barra de formatação do texto */
+.ferramentas{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:-1px}
+.ferramentas button{
+  padding:7px 12px;font-size:11px;letter-spacing:.06em;
+  border:1px solid var(--fio);color:var(--fumo);transition:.18s;
+}
+.ferramentas button:hover{border-color:var(--prata);color:var(--marfim)}
+.ferramentas button b{font-weight:700}
+.ferramentas button i{font-style:italic;font-family:var(--serif);font-size:14px}
+
+/* pré-visualização da capa */
+.previa{aspect-ratio:16/9;border:1px solid var(--fio);background:var(--marinho-alto);display:grid;place-items:center;overflow:hidden;margin-top:10px}
+.previa img{width:100%;height:100%;object-fit:cover}
+.previa span{font-size:11.5px;color:var(--fumo-fraco);text-align:center;padding:16px;line-height:1.6}
+
+.barra-envio{height:3px;background:var(--fio);margin-top:10px;overflow:hidden}
+.barra-envio i{display:block;height:100%;width:0;background:var(--prata);transition:width .25s}
+
+.acoes-fim{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;padding-top:22px;border-top:1px solid var(--fio)}
+
+/* sobreposição de confirmação */
+.confirma{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:rgba(6,9,14,.82);backdrop-filter:blur(6px)}
+.confirma[hidden]{display:none}
+.confirma-cx{width:100%;max-width:420px;background:var(--marinho);border:1px solid var(--fio-forte);padding:28px}
+.confirma-cx h3{font-family:var(--serif);font-size:23px;font-weight:400}
+.confirma-cx p{font-size:13.5px;color:var(--fumo);line-height:1.7;margin-top:10px}
+.confirma-acao{display:flex;gap:10px;justify-content:flex-end;margin-top:24px;flex-wrap:wrap}

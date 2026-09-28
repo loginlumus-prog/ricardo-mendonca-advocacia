@@ -1,0 +1,57 @@
+rules_version = '2';
+
+// ============================================================
+// REGRAS DO FIRESTORE — Ricardo Mendonça & Advogados Associados
+//
+// POR QUE A LISTA DE E-MAILS:
+// Não basta exigir "usuário logado". Mesmo sem tela de cadastro no
+// site, qualquer pessoa consegue criar uma conta no Firebase chamando
+// o SDK pelo console do navegador. Se a regra fosse só
+// `request.auth != null`, essa pessoa escreveria no site do escritório.
+//
+// Troque os e-mails abaixo pelos de quem pode publicar.
+// Para acrescentar alguém: inclua o e-mail na lista E crie o usuário
+// em Authentication → Users. As duas coisas.
+//
+// E DESLIGUE O CADASTRO PÚBLICO (Authentication → Settings →
+// User actions → desmarcar "Enable create (sign-up)"). Com ele
+// desligado, só existe conta que o dono criou pelo console — e a
+// lista abaixo vira uma segunda tranca, não a única.
+//
+// Não exigimos email_verified de propósito: usuário criado pelo
+// console nasce com e-mail NÃO verificado, e a checagem trancaria
+// o próprio administrador para fora.
+// ============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function ehEditor() {
+      return request.auth != null
+        && request.auth.token.email in [
+             '<EMAIL_DO_ADMIN>'
+           ];
+    }
+
+    // Formato mínimo de um artigo — impede que um erro no painel
+    // grave um documento que quebre a vitrine.
+    function artigoValido(a) {
+      return a.titulo is string && a.titulo.size() > 0 && a.titulo.size() <= 160
+          && a.corpo  is string && a.corpo.size()  > 0 && a.corpo.size()  <= 100000
+          && a.publicado is bool;
+    }
+
+    match /artigos/{id} {
+      // visitante lê só o que está publicado; editor lê também rascunho
+      allow read:   if resource.data.publicado == true || ehEditor();
+      allow create: if ehEditor() && artigoValido(request.resource.data);
+      allow update: if ehEditor() && artigoValido(request.resource.data);
+      allow delete: if ehEditor();
+    }
+
+    // tudo o que não foi liberado acima está fechado
+    match /{documento=**} {
+      allow read, write: if false;
+    }
+  }
+}

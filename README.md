@@ -5,9 +5,29 @@ Recuperação de Crédito, com sede em Salvador/BA.
 
 ## Estrutura
 
-    index.html      o site inteiro
-    img/            imagens já tratadas e otimizadas para a web
-    midia/original/ o que o cliente enviou, sem tratamento
+    index.html          página principal
+    artigos.html        vitrine de artigos
+    artigo.html         leitura de um artigo (?id=...)
+    painel.html         área do escritório: login, lista e editor
+    privacidade.html    aviso de privacidade (LGPD)
+    css/site.css        sistema visual, compartilhado por todas as páginas
+    css/painel.css      só o painel
+    js/firebase.js      configuração e utilidades — é aqui que se cola o firebaseConfig
+    js/site.js          topo, revelação ao rolar e aviso de cookies
+    js/artigos.js       vitrine
+    js/artigo.js        leitura, com Open Graph e Schema.org Article
+    js/painel.js        painel
+    firestore.rules     quem pode ler e escrever artigos
+    storage.rules       quem pode enviar capas
+    img/                imagens tratadas e otimizadas
+    midia/original/     o que o cliente enviou, sem tratamento
+
+## Sistema de artigos
+
+O escritório publica sozinho pelo `painel.html`. Para ligar é preciso criar o
+projeto no Firebase e publicar as regras de segurança — **o passo a passo está
+em [FIREBASE.md](FIREBASE.md)**. Sem isso o site funciona normalmente e a seção
+de artigos simplesmente não aparece.
 
 ## Sobre as imagens
 

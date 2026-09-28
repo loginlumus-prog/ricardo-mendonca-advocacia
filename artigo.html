@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add("js")</script>
+<!-- título, descrição, Open Graph e Schema.org Article são reescritos por
+     js/artigo.js assim que o artigo chega do Firebase. Os valores abaixo
+     são o que aparece antes disso — e para robôs que não rodam JS. -->
+<title>Artigo | Ricardo Mendonça &amp; Advogados Associados</title>
+<meta name="description" content="Artigo do escritório Ricardo Mendonça & Advogados Associados.">
+<link rel="canonical" href="https://loginlumus-prog.github.io/ricardo-mendonca-advocacia/artigo.html">
+
+<meta property="og:type" content="article">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Ricardo Mendonça &amp; Advogados Associados">
+<meta property="og:title" content="Artigo · Ricardo Mendonça &amp; Advogados Associados">
+<meta property="og:description" content="Artigo do escritório Ricardo Mendonça & Advogados Associados.">
+<meta property="og:url" content="https://loginlumus-prog.github.io/ricardo-mendonca-advocacia/artigo.html">
+<meta property="og:image" content="https://loginlumus-prog.github.io/ricardo-mendonca-advocacia/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Artigo · Ricardo Mendonça &amp; Advogados Associados">
+<meta name="twitter:description" content="Artigo do escritório Ricardo Mendonça & Advogados Associados.">
+<meta name="twitter:image" content="https://loginlumus-prog.github.io/ricardo-mendonca-advocacia/img/og.jpg">
+
+<meta name="theme-color" content="#0A0D14">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Archivo:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<header class="topo solido" id="topo">
+  <a class="marca" href="index.html" aria-label="Ricardo Mendonça Advogados Associados — início">
+    <img src="img/monograma.webp" alt="Ricardo Mendonça Advogados Associados">
+  </a>
+  <nav class="nav">
+    <a href="index.html#escritorio">O escritório</a>
+    <a href="index.html#areas">Áreas</a>
+    <a href="index.html#socios">Sócios</a>
+    <a href="artigos.html" aria-current="page">Artigos</a>
+    <a class="bt" href="index.html#contato">Contato</a>
+  </nav>
+</header>
+
+<main class="gut">
+  <div id="carregando" class="leitura art-cab">
+    <div class="carregando" style="margin-top:0"><i class="giro"></i>Carregando artigo</div>
+  </div>
+
+  <article id="artigo" class="leitura" hidden>
+    <header class="art-cab">
+      <a href="artigos.html" class="chapeu mudo">&larr; Artigos</a>
+      <h1 id="art-titulo" class="art-tit"></h1>
+      <div class="art-meta">
+        <time id="art-data"></time>
+        <span id="art-autor"></span>
+      </div>
+    </header>
+
+    <figure id="art-capa" class="art-capa" hidden></figure>
+
+    <div id="art-corpo" class="art-corpo"></div>
+
+    <footer class="art-pe">
+      <a href="artigos.html" class="bt mini">&larr; Todos os artigos</a>
+      <span class="chapeu mudo">Conteúdo informativo &middot; não constitui consulta jurídica</span>
+    </footer>
+  </article>
+
+  <div id="erro" class="leitura art-cab" hidden>
+    <span class="chapeu mudo">Artigo não encontrado</span>
+    <h1 class="art-tit">Este artigo não está disponível.</h1>
+    <p class="corpo" style="margin-top:20px">
+      Ele pode ter sido removido ou o endereço pode estar incompleto.
+    </p>
+    <div style="margin-top:30px"><a href="artigos.html" class="bt">Ver todos os artigos</a></div>
+  </div>
+</main>
+
+<footer class="rodape gut" style="margin-top:clamp(40px,6vw,80px)">
+  <div class="limite">
+    <div class="rodape-topo">
+      <div class="rod">
+        <img src="img/logo.webp" alt="" class="rod-marca">
+        <p style="max-width:38ch">
+          Ricardo Mendonça &amp; Advogados Associados<br>
+          Sociedade de advogados inscrita na OAB/BA sob o nº 292/96-S1<br>
+          CNPJ 01.230.452/0001-22
+        </p>
+      </div>
+      <div class="rod">
+        <h5>Navegação</h5>
+        <a href="index.html#escritorio">O escritório</a>
+        <a href="index.html#areas">Áreas de atuação</a>
+        <a href="index.html#socios">Sócios</a>
+        <a href="artigos.html">Artigos</a>
+        <a href="index.html#contato">Contato</a>
+      </div>
+      <div class="rod">
+        <h5>Sede</h5>
+        <p>Rua Frederico Simões, 85<br>Caminho das Árvores<br>Salvador &middot; BA</p>
+        <a href="tel:+557130525379">(71) 3052-5379</a>
+        <a href="privacidade.html">Aviso de privacidade</a>
+      </div>
+    </div>
+    <div class="rod-pe">
+      <span>&copy; <span data-ano>2026</span> Ricardo Mendonça &amp; Advogados Associados</span>
+      <span class="aviso-oab">
+        Conteúdo de caráter meramente informativo, em conformidade com o Código de Ética e
+        Disciplina e o Provimento nº 205/2021 do Conselho Federal da OAB. Não constitui
+        oferta de serviços, captação de clientela nem promessa de resultados.
+      </span>
+    </div>
+  </div>
+</footer>
+
+<a class="zap" href="https://wa.me/5571981096389" target="_blank" rel="noopener" aria-label="Conversar com o escritório pelo WhatsApp">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M20.5 11.6a8.4 8.4 0 0 1-12.4 7.4L3.5 20.5l1.5-4.4a8.4 8.4 0 1 1 15.5-4.5z"/>
+    <path d="M9.2 8.6c.2-.5.5-.6.8-.6h.5c.2 0 .4.1.5.4l.7 1.7c.1.2 0 .5-.1.6l-.5.6c-.1.2-.1.4 0 .5.6 1.1 1.4 1.9 2.5 2.5.2.1.4.1.5 0l.6-.5c.2-.1.4-.2.6-.1l1.7.7c.3.1.4.3.4.5v.5c0 .3-.1.6-.6.8-.5.3-1.4.5-2.6.1-1.9-.6-3.6-2.3-4.3-4.2-.4-1.2-.2-2.1.3-2.5z"/>
+  </svg>
+</a>
+
+<div id="cookies" class="cookies" hidden role="region" aria-label="Aviso de privacidade">
+  <p>
+    Este site não usa cookies de rastreamento nem de publicidade. Guardamos apenas a sua
+    escolha sobre este aviso, no próprio navegador. <a href="privacidade.html">Saiba mais</a>.
+  </p>
+  <div class="cookies-acao">
+    <button class="bt mini forte" data-aceitar>Entendi</button>
+    <button class="bt mini" data-recusar>Recusar</button>
+  </div>
+</div>
+
+<script src="js/site.js" defer></script>
+<script type="module" src="js/artigo.js"></script>
+</body>
+</html>

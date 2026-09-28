@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel · Ricardo Mendonça &amp; Advogados Associados</title>
+<!-- área interna: fora do Google -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0A0D14">
+<link rel="icon" href="favicon.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Archivo:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/painel.css">
+</head>
+<body class="painel">
+
+<!-- ═════════════ ENTRADA ═════════════ -->
+<main id="tela-entrada" class="entrada">
+  <div class="entrada-cx">
+    <img src="img/logo.webp" alt="Ricardo Mendonça Advogados Associados">
+    <h1 class="entrada-h">Área do escritório</h1>
+    <p class="entrada-p">Acesso restrito à publicação de artigos.</p>
+
+    <form id="form-entrada" novalidate>
+      <div class="campo">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" autocomplete="username" required>
+      </div>
+      <div class="campo">
+        <label for="senha">Senha</label>
+        <input id="senha" type="password" autocomplete="current-password" required>
+      </div>
+      <p id="recado-entrada" class="recado" hidden role="alert"></p>
+      <button type="submit" class="bt forte" style="width:100%;justify-content:center;margin-top:24px">Entrar</button>
+    </form>
+  </div>
+</main>
+
+<!-- ═════════════ APLICAÇÃO ═════════════ -->
+<div id="tela-app" hidden>
+  <header class="painel-topo">
+    <a href="index.html" title="Ver o site"><img src="img/monograma.webp" alt="Ricardo Mendonça"></a>
+    <div class="painel-quem">
+      <span id="quem"></span>
+      <button id="sair" class="bt mini">Sair</button>
+    </div>
+  </header>
+
+  <main class="painel-corpo">
+
+    <!-- ── LISTA ── -->
+    <section id="tela-lista">
+      <div class="painel-cab">
+        <div>
+          <span class="chapeu mudo">Publicações</span>
+          <h1 class="painel-h" style="margin-top:8px">Artigos</h1>
+        </div>
+        <button id="novo" class="bt forte">Novo artigo</button>
+      </div>
+      <div id="lista" class="lista"></div>
+    </section>
+
+    <!-- ── EDITOR ── -->
+    <section id="tela-editor" hidden>
+      <div class="painel-cab">
+        <div>
+          <button id="voltar" class="chapeu mudo" style="padding:0">&larr; Todos os artigos</button>
+          <h1 id="titulo-editor" class="painel-h" style="margin-top:8px">Novo artigo</h1>
+        </div>
+      </div>
+
+      <form id="form-artigo" class="editor" novalidate>
+        <div>
+          <div class="campo" style="margin-top:0">
+            <label for="titulo">Título</label>
+            <input id="titulo" type="text" maxlength="160" required
+                   placeholder="Ex.: O que muda na recuperação de crédito com o novo marco legal">
+          </div>
+
+          <div class="campo">
+            <label for="corpo">Texto</label>
+            <div class="ferramentas" role="toolbar" aria-label="Formatação">
+              <button type="button" data-marca="negrito" title="Negrito"><b>N</b></button>
+              <button type="button" data-marca="italico" title="Itálico"><i>I</i></button>
+              <button type="button" data-marca="titulo2" title="Subtítulo">Subtítulo</button>
+              <button type="button" data-marca="titulo3" title="Intertítulo">Intertítulo</button>
+              <button type="button" data-marca="citacao" title="Citação">Citação</button>
+              <button type="button" data-marca="lista"   title="Item de lista">Lista</button>
+              <button type="button" data-marca="link"    title="Link">Link</button>
+            </div>
+            <textarea id="corpo" rows="22" required
+              placeholder="Escreva normalmente. Deixe uma linha em branco entre os parágrafos.&#10;&#10;Para formatar, selecione o trecho e clique num dos botões acima."></textarea>
+            <span class="dica">Selecione um trecho e use os botões para formatar. Uma linha em branco separa os parágrafos.</span>
+          </div>
+
+          <p id="recado-artigo" class="recado" hidden role="alert"></p>
+
+          <div class="acoes-fim">
+            <button type="submit" class="bt forte">Publicar</button>
+          </div>
+        </div>
+
+        <aside class="editor-lado">
+          <h4>Imagem de capa</h4>
+          <div id="previa" class="previa"><span>Nenhuma capa escolhida</span></div>
+          <div id="barra-envio" class="barra-envio"><i></i></div>
+          <div class="campo">
+            <label for="capa">Escolher imagem</label>
+            <input id="capa" type="file" accept="image/jpeg,image/png,image/webp">
+            <span class="dica">Horizontal, até 5 MB. A proporção ideal é 16:9.</span>
+          </div>
+
+          <div class="campo">
+            <label for="autor">Autor</label>
+            <input id="autor" type="text" placeholder="Ricardo Mendonça &amp; Advogados Associados">
+            <span class="dica">Em branco, sai em nome do escritório.</span>
+          </div>
+
+          <div class="campo">
+            <label style="display:flex;gap:10px;align-items:center;cursor:pointer;text-transform:none;letter-spacing:0;font-size:13px;color:var(--marfim)">
+              <input id="publicado" type="checkbox" checked style="width:auto">
+              Publicar no site
+            </label>
+            <span class="dica">Desmarcado, o artigo fica salvo como rascunho e só aparece aqui.</span>
+          </div>
+        </aside>
+      </form>
+    </section>
+  </main>
+</div>
+
+<!-- confirmação de exclusão -->
+<div id="confirma" class="confirma" hidden role="dialog" aria-modal="true" aria-labelledby="confirma-tit">
+  <div class="confirma-cx">
+    <h3 id="confirma-tit">Excluir este artigo?</h3>
+    <p id="confirma-texto"></p>
+    <div class="confirma-acao">
+      <button id="cancela" class="bt mini">Cancelar</button>
+      <button id="confirma-sim" class="bt mini forte">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/painel.js"></script>
+</body>
+</html>
