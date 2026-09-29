@@ -29,6 +29,9 @@
   --gut:clamp(20px,5vw,80px);
 }
 *{box-sizing:border-box}
+/* o atributo hidden tem que vencer qualquer display do CSS — sem isso
+   um bloco com display:grid continua na tela mesmo "escondido" */
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{

@@ -30,7 +30,6 @@ body.painel{background:var(--breu)}
 .recado{padding:11px 14px;font-size:12.5px;line-height:1.6;border:1px solid var(--fio);margin-top:16px}
 .recado.erro{border-color:var(--erro);color:var(--erro)}
 .recado.ok{border-color:var(--ok);color:var(--ok)}
-.recado[hidden]{display:none}
 
 /* ══════ ESTRUTURA ══════ */
 .painel-topo{
@@ -91,7 +90,6 @@ body.painel{background:var(--breu)}
 
 /* sobreposição de confirmação */
 .confirma{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:rgba(6,9,14,.82);backdrop-filter:blur(6px)}
-.confirma[hidden]{display:none}
 .confirma-cx{width:100%;max-width:420px;background:var(--marinho);border:1px solid var(--fio-forte);padding:28px}
 .confirma-cx h3{font-family:var(--serif);font-size:23px;font-weight:400}
 .confirma-cx p{font-size:13.5px;color:var(--fumo);line-height:1.7;margin-top:10px}
