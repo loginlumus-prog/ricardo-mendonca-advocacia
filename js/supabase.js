@@ -9,8 +9,8 @@
 import { createClient }
   from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/+esm";
 
-const URL_PROJETO = "<URL_DO_PROJETO>";
-const CHAVE       = "<CHAVE_PUBLICAVEL>";
+const URL_PROJETO = "https://vxhiirbxgaluzxlqzfss.supabase.co";
+const CHAVE       = "sb_publishable_7pKnALRGXklAjO7jVUaQxw_xP_N3xO9";
 
 /** Ainda não configurado? As telas avisam em vez de quebrar em silêncio. */
 export const configurado = !URL_PROJETO.startsWith("<");
