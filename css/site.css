@@ -250,19 +250,21 @@ html.js .revela.atraso-3{transition-delay:.24s}
 
 /* ══════════════════════════════════════════════════════════
    WHATSAPP
-   Sóbrio de propósito: o balão verde padrão é linguagem de
-   varejo e destoa de site de escritório — além de puxar para o
-   tom de captação que o Provimento 205/2021 restringe.
+   Símbolo oficial, na cor oficial: é o que o visitante reconhece
+   de relance. A sobriedade que o Provimento 205/2021 pede fica no
+   resto — sem balão de texto, sem "fale agora", sem animação
+   chamando atenção.
    ══════════════════════════════════════════════════════════ */
 .zap{
   position:fixed;right:clamp(16px,3vw,32px);bottom:clamp(16px,3vw,32px);z-index:65;
-  width:52px;height:52px;display:grid;place-items:center;
-  background:rgba(16,23,37,.94);backdrop-filter:blur(10px);
-  border:1px solid var(--fio-forte);color:var(--prata);
-  transition:border-color .25s,color .25s,transform .25s;
+  width:56px;height:56px;border-radius:50%;display:grid;place-items:center;
+  background:#25D366;color:#fff;
+  box-shadow:0 10px 26px -10px rgba(0,0,0,.7),0 2px 6px rgba(0,0,0,.25);
+  transition:background .25s,transform .25s,box-shadow .25s;
 }
-.zap:hover{border-color:var(--prata);color:var(--prata-luz);transform:translateY(-2px)}
-.zap svg{width:22px;height:22px}
+.zap:hover{background:#1EBE5A;transform:translateY(-2px);box-shadow:0 14px 30px -10px rgba(0,0,0,.75),0 2px 8px rgba(0,0,0,.3)}
+.zap:focus-visible{outline:2px solid var(--prata-luz);outline-offset:4px}
+.zap svg{width:30px;height:30px}
 @media (prefers-reduced-motion:reduce){.zap{transition:none}.zap:hover{transform:none}}
 /* sai da frente enquanto o aviso de cookies estiver na tela */
 body.com-cookies .zap{transform:translateY(-96px)}

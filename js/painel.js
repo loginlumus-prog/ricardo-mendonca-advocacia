@@ -1,21 +1,14 @@
 /* ============================================================
    PAINEL — login, lista, editor e exclusão.
 
-   Tudo roda no navegador contra o Firebase. Quem impede que um
-   visitante escreva não é este arquivo: são as regras publicadas
-   (firestore.rules / storage.rules). Este arquivo só constrói a
-   interface de quem já passou pelo login.
+   Tudo roda no navegador contra o Supabase. Quem impede que um
+   visitante escreva não é este arquivo: são as políticas do banco
+   (supabase/esquema.sql). Este arquivo só constrói a interface de
+   quem já passou pelo login.
    ============================================================ */
 
-import { db, auth, storage, configurado, COLECAO, dataCurta, resumir }
-  from "./firebase.js";
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { collection, doc, addDoc, getDoc, getDocs, updateDoc, deleteDoc,
-         query, orderBy, serverTimestamp }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-import { ref, uploadBytesResumable, getDownloadURL, deleteObject }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+import { clienteDoPainel, configurado, TABELA, BUCKET, dataCurta, resumir, escapar }
+  from "./supabase.js";
 
 const tela = {
   entrada: document.getElementById("tela-entrada"),
@@ -24,54 +17,76 @@ const tela = {
   editor:  document.getElementById("tela-editor"),
 };
 
-let editando = null;   // id do artigo em edição, ou null para novo
-let capaURL  = "";     // URL da capa já enviada
-let capaPath = "";     // caminho no Storage, para poder apagar depois
-
 /* ══════ configuração ausente ══════ */
 if (!configurado) {
   document.body.innerHTML = `
     <div class="entrada"><div class="entrada-cx">
-      <h1 class="entrada-h">Firebase ainda não configurado</h1>
-      <p class="entrada-p">Abra <code>js/firebase.js</code> e cole os dados do projeto.
-      O passo a passo está em <code>FIREBASE.md</code>, na raiz do site.</p>
+      <h1 class="entrada-h">Painel ainda não ligado</h1>
+      <p class="entrada-p">Falta conectar o banco de dados em <code>js/supabase.js</code>.
+      O passo a passo está em <code>SUPABASE.md</code>, na raiz do site.</p>
     </div></div>`;
-  throw new Error("Firebase não configurado");
+  throw new Error("Supabase não configurado");
 }
+
+const sb = clienteDoPainel();
+const artigos = new Map();   // o que está na lista, por id
+let editando = null;         // artigo aberto no editor, ou null para novo
+let capaNova = null;         // imagem já reduzida, esperando o "Publicar"
+let logado = null;
 
 /* ══════ ENTRADA ══════ */
 const formEntrada = document.getElementById("form-entrada");
 const recadoEntrada = document.getElementById("recado-entrada");
+const botaoEntrar = formEntrada.querySelector("button[type=submit]");
 
 formEntrada.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const botao = formEntrada.querySelector("button[type=submit]");
-  botao.disabled = true;
+  botaoEntrar.disabled = true;
   recadoEntrada.hidden = true;
-  try {
-    await signInWithEmailAndPassword(
-      auth,
-      document.getElementById("email").value.trim(),
-      document.getElementById("senha").value
-    );
-  } catch (erro) {
-    aviso(recadoEntrada, "erro", mensagemDeErro(erro));
-    botao.disabled = false;
+  const { error } = await sb.auth.signInWithPassword({
+    email: document.getElementById("email").value.trim(),
+    password: document.getElementById("senha").value,
+  });
+  if (error) {
+    aviso(recadoEntrada, "erro", mensagemDeErro(error));
+    botaoEntrar.disabled = false;
   }
 });
 
-document.getElementById("sair").addEventListener("click", () => signOut(auth));
+document.getElementById("sair").addEventListener("click", () => sb.auth.signOut());
 
-onAuthStateChanged(auth, (pessoa) => {
-  const dentro = !!pessoa;
-  tela.entrada.hidden = dentro;
-  tela.app.hidden = !dentro;
-  formEntrada.querySelector("button[type=submit]").disabled = false;
-  if (dentro) {
-    document.getElementById("quem").textContent = pessoa.email;
-    carregarLista();
-  }
+sb.auth.onAuthStateChange((_evento, sessao) => {
+  // O SDK trava se outra chamada ao Supabase roda dentro deste callback;
+  // por isso a reação vai para a próxima volta do laço de eventos.
+  setTimeout(() => mudouSessao(sessao), 0);
 });
+
+async function mudouSessao(sessao) {
+  const dentro = !!sessao;
+  if (dentro === logado) return;   // renovação de token: nada mudou
+  logado = dentro;
+
+  if (!dentro) {
+    tela.app.hidden = true;
+    tela.entrada.hidden = false;
+    botaoEntrar.disabled = false;
+    return;
+  }
+
+  // Login certo não basta: o e-mail precisa estar na lista de editores.
+  // Sem isso a pessoa entraria num painel onde nada salva.
+  const { data } = await sb.from("editores").select("email").maybeSingle();
+  if (!data) {
+    await sb.auth.signOut();
+    aviso(recadoEntrada, "erro", "Este e-mail não tem permissão para publicar. Fale com quem administra o site.");
+    return;
+  }
+
+  document.getElementById("quem").textContent = sessao.user.email;
+  tela.entrada.hidden = true;
+  tela.app.hidden = false;
+  carregarLista();
+}
 
 /* ══════ LISTA ══════ */
 const lista = document.getElementById("lista");
@@ -79,26 +94,34 @@ const lista = document.getElementById("lista");
 async function carregarLista() {
   mostrar("lista");
   lista.innerHTML = `<div class="carregando"><i class="giro"></i>Carregando</div>`;
-  try {
-    const r = await getDocs(query(collection(db, COLECAO), orderBy("criadoEm", "desc")));
-    if (r.empty) {
-      lista.innerHTML = `<div class="vazio"><p>Nenhum artigo ainda. Use “Novo artigo” para publicar o primeiro.</p></div>`;
-      return;
-    }
-    lista.innerHTML = r.docs.map((d) => linha(d.id, d.data())).join("");
-    lista.querySelectorAll("[data-editar]").forEach((b) =>
-      b.addEventListener("click", () => abrirEditor(b.dataset.editar)));
-    lista.querySelectorAll("[data-excluir]").forEach((b) =>
-      b.addEventListener("click", () => pedirExclusao(b.dataset.excluir, b.dataset.titulo)));
-  } catch (erro) {
-    console.error(erro);
-    lista.innerHTML = `<div class="recado erro">Não consegui carregar a lista. ${escapar(mensagemDeErro(erro))}</div>`;
+  const { data, error } = await sb
+    .from(TABELA)
+    .select("id, titulo, resumo, capa, capa_path, publicado, criado_em")
+    .order("criado_em", { ascending: false });
+
+  if (error) {
+    console.error(error);
+    lista.innerHTML = `<div class="recado erro">Não consegui carregar a lista. ${escapar(mensagemDeErro(error))}</div>`;
+    return;
   }
+
+  artigos.clear();
+  data.forEach((a) => artigos.set(a.id, a));
+
+  if (!data.length) {
+    lista.innerHTML = `<div class="vazio"><p>Nenhum artigo ainda. Use “Novo artigo” para publicar o primeiro.</p></div>`;
+    return;
+  }
+  lista.innerHTML = data.map(linha).join("");
+  lista.querySelectorAll("[data-editar]").forEach((b) =>
+    b.addEventListener("click", () => abrirEditor(b.dataset.editar)));
+  lista.querySelectorAll("[data-excluir]").forEach((b) =>
+    b.addEventListener("click", () => pedirExclusao(b.dataset.excluir)));
 }
 
-function linha(id, a) {
+function linha(a) {
   const mini = a.capa
-    ? `<img class="linha-mini" src="${escaparAttr(a.capa)}" alt="">`
+    ? `<img class="linha-mini" src="${escapar(a.capa)}" alt="">`
     : `<div class="linha-mini"></div>`;
   const estado = a.publicado
     ? `<span class="selo-e publicado">No ar</span>`
@@ -108,12 +131,12 @@ function linha(id, a) {
     ${mini}
     <div>
       <div class="linha-tit">${escapar(a.titulo || "Sem título")}</div>
-      <div class="linha-sub">${estado} &nbsp;${escapar(resumir(a.corpo, 70))}</div>
+      <div class="linha-sub">${estado} &nbsp;${escapar(resumir(a.resumo, 70))}</div>
     </div>
-    <span class="linha-data">${escapar(dataCurta(a.criadoEm))}</span>
+    <span class="linha-data">${escapar(dataCurta(a.criado_em))}</span>
     <span class="linha-acao">
-      <button class="bt mini" data-editar="${id}">Editar</button>
-      <button class="bt mini" data-excluir="${id}" data-titulo="${escaparAttr(a.titulo || "")}">Excluir</button>
+      <button class="bt mini" data-editar="${a.id}">Editar</button>
+      <button class="bt mini" data-excluir="${a.id}">Excluir</button>
     </span>
   </div>`;
 }
@@ -125,66 +148,84 @@ const campoTitulo = document.getElementById("titulo");
 const campoCorpo = document.getElementById("corpo");
 const campoAutor = document.getElementById("autor");
 const campoPublicado = document.getElementById("publicado");
+const campoCapa = document.getElementById("capa");
 const previa = document.getElementById("previa");
-const barra = document.getElementById("barra-envio");
 const tituloEditor = document.getElementById("titulo-editor");
+const botaoPublicar = formArtigo.querySelector("button[type=submit]");
 
 document.getElementById("novo").addEventListener("click", () => abrirEditor(null));
 document.getElementById("voltar").addEventListener("click", carregarLista);
 
 async function abrirEditor(id) {
-  editando = id;
-  capaURL = ""; capaPath = "";
+  editando = null;
+  capaNova = null;
   formArtigo.reset();
   recadoArtigo.hidden = true;
-  barra.firstElementChild.style.width = "0";
-  previa.innerHTML = `<span>Nenhuma capa escolhida</span>`;
+  botaoPublicar.disabled = false;
+  mostrarPrevia("");
   tituloEditor.textContent = id ? "Editar artigo" : "Novo artigo";
   mostrar("editor");
 
   if (!id) return;
-  try {
-    const d = await getDoc(doc(db, COLECAO, id));
-    if (!d.exists()) { aviso(recadoArtigo, "erro", "Este artigo não existe mais."); return; }
-    const a = d.data();
-    campoTitulo.value = a.titulo || "";
-    campoCorpo.value = a.corpo || "";
-    campoAutor.value = a.autor || "";
-    campoPublicado.checked = a.publicado !== false;
-    capaURL = a.capa || "";
-    capaPath = a.capaPath || "";
-    if (capaURL) previa.innerHTML = `<img src="${escaparAttr(capaURL)}" alt="">`;
-  } catch (erro) {
-    aviso(recadoArtigo, "erro", mensagemDeErro(erro));
+  const { data, error } = await sb.from(TABELA).select("*").eq("id", id).maybeSingle();
+  if (error || !data) {
+    aviso(recadoArtigo, "erro", error ? mensagemDeErro(error) : "Este artigo não existe mais.");
+    return;
   }
+  editando = data;
+  campoTitulo.value = data.titulo || "";
+  campoCorpo.value = data.corpo || "";
+  campoAutor.value = data.autor || "";
+  campoPublicado.checked = data.publicado !== false;
+  mostrarPrevia(data.capa || "");
 }
 
-/* upload da capa */
-document.getElementById("capa").addEventListener("change", async (e) => {
-  const arquivo = e.target.files?.[0];
+function mostrarPrevia(src) {
+  previa.innerHTML = src
+    ? `<img src="${escapar(src)}" alt="">`
+    : `<span>Nenhuma capa escolhida</span>`;
+}
+
+/* A capa é reduzida aqui mesmo, no navegador: foto de celular chega com
+   4 a 8 MB e o site só precisa de 1600 px. Ela só sobe no "Publicar" —
+   assim quem desiste do artigo não deixa imagem perdida no servidor. */
+campoCapa.addEventListener("change", async () => {
+  const arquivo = campoCapa.files?.[0];
   if (!arquivo) return;
 
-  if (!arquivo.type.startsWith("image/")) {
-    aviso(recadoArtigo, "erro", "A capa precisa ser uma imagem."); return;
+  if (!/^image\/(jpeg|png|webp)$/.test(arquivo.type)) {
+    aviso(recadoArtigo, "erro", "A capa precisa ser JPG, PNG ou WebP.");
+    campoCapa.value = "";
+    return;
   }
-  if (arquivo.size > 5 * 1024 * 1024) {
-    aviso(recadoArtigo, "erro", "A imagem tem mais de 5 MB. Reduza antes de enviar."); return;
+  try {
+    capaNova = await reduzir(arquivo);
+    mostrarPrevia(URL.createObjectURL(capaNova));
+    aviso(recadoArtigo, "ok", "Capa pronta. Ela vai para o site quando você clicar em Publicar.");
+  } catch (erro) {
+    console.error(erro);
+    capaNova = null;
+    aviso(recadoArtigo, "erro", "Não consegui abrir essa imagem. Tente outro arquivo.");
   }
-
-  const caminho = `capas/${Date.now()}-${arquivo.name.replace(/[^\w.\-]/g, "_")}`;
-  const tarefa = uploadBytesResumable(ref(storage, caminho), arquivo, { contentType: arquivo.type });
-
-  tarefa.on("state_changed",
-    (s) => { barra.firstElementChild.style.width = `${(s.bytesTransferred / s.totalBytes) * 100}%`; },
-    (erro) => aviso(recadoArtigo, "erro", mensagemDeErro(erro)),
-    async () => {
-      capaURL = await getDownloadURL(tarefa.snapshot.ref);
-      capaPath = caminho;
-      previa.innerHTML = `<img src="${escaparAttr(capaURL)}" alt="">`;
-      aviso(recadoArtigo, "ok", "Capa enviada.");
-      barra.firstElementChild.style.width = "0";
-    });
 });
+
+async function reduzir(arquivo, maxL = 1600, maxA = 1200) {
+  const bmp = await createImageBitmap(arquivo);
+  const escala = Math.min(1, maxL / bmp.width, maxA / bmp.height);
+  const quadro = document.createElement("canvas");
+  quadro.width = Math.round(bmp.width * escala);
+  quadro.height = Math.round(bmp.height * escala);
+  quadro.getContext("2d").drawImage(bmp, 0, 0, quadro.width, quadro.height);
+  bmp.close?.();
+
+  const gerar = (tipo, q) => new Promise((ok) => quadro.toBlob(ok, tipo, q));
+  const webp = await gerar("image/webp", 0.82);
+  if (webp?.type === "image/webp") return webp;
+  // Safari antigo não gera WebP e devolve PNG pesado; JPEG resolve
+  const jpeg = await gerar("image/jpeg", 0.85);
+  if (!jpeg) throw new Error("Falha ao converter a imagem");
+  return jpeg;
+}
 
 formArtigo.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -194,30 +235,50 @@ formArtigo.addEventListener("submit", async (e) => {
     aviso(recadoArtigo, "erro", "Título e texto são obrigatórios."); return;
   }
 
-  const botao = formArtigo.querySelector("button[type=submit]");
-  botao.disabled = true;
-
-  const dados = {
-    titulo, corpo,
-    autor: campoAutor.value.trim() || "Ricardo Mendonça & Advogados Associados",
-    resumo: resumir(corpo, 160),
-    capa: capaURL, capaPath,
-    publicado: campoPublicado.checked,
-    atualizadoEm: serverTimestamp(),
-  };
+  botaoPublicar.disabled = true;
+  let caminhoNovo = null;
 
   try {
-    if (editando) {
-      await updateDoc(doc(db, COLECAO, editando), dados);
-    } else {
-      // criadoEm só na criação: editar um artigo não pode jogá-lo
-      // para o topo da lista como se fosse novo.
-      await addDoc(collection(db, COLECAO), { ...dados, criadoEm: serverTimestamp() });
+    let capa = editando?.capa ?? null;
+    let capa_path = editando?.capa_path ?? null;
+
+    if (capaNova) {
+      aviso(recadoArtigo, "ok", "Enviando a capa…");
+      caminhoNovo = `${crypto.randomUUID()}.${capaNova.type === "image/webp" ? "webp" : "jpg"}`;
+      const envio = await sb.storage.from(BUCKET).upload(caminhoNovo, capaNova, {
+        contentType: capaNova.type, cacheControl: "31536000", upsert: false,
+      });
+      if (envio.error) throw envio.error;
+      capa = sb.storage.from(BUCKET).getPublicUrl(caminhoNovo).data.publicUrl;
+      capa_path = caminhoNovo;
+    }
+
+    const dados = {
+      titulo, corpo,
+      autor: campoAutor.value.trim() || null,
+      resumo: resumir(corpo, 160),
+      capa, capa_path,
+      publicado: campoPublicado.checked,
+    };
+
+    // .select() devolve as linhas afetadas: sem permissão, o banco não
+    // dá erro no update, só não altera nada — e isso tem que aparecer.
+    const { data, error } = editando
+      ? await sb.from(TABELA).update(dados).eq("id", editando.id).select("id")
+      : await sb.from(TABELA).insert(dados).select("id");
+    if (error) throw error;
+    if (!data?.length) throw { code: "42501" };
+
+    // a capa antiga saiu do artigo; sem isso ela ficaria no servidor para sempre
+    if (caminhoNovo && editando?.capa_path) {
+      await sb.storage.from(BUCKET).remove([editando.capa_path]);
     }
     carregarLista();
   } catch (erro) {
+    console.error(erro);
+    if (caminhoNovo) sb.storage.from(BUCKET).remove([caminhoNovo]);
     aviso(recadoArtigo, "erro", mensagemDeErro(erro));
-    botao.disabled = false;
+    botaoPublicar.disabled = false;
   }
 });
 
@@ -247,35 +308,35 @@ function envolver(tipo) {
 /* ══════ EXCLUSÃO ══════ */
 const confirma = document.getElementById("confirma");
 const confirmaTexto = document.getElementById("confirma-texto");
+const botaoConfirma = document.getElementById("confirma-sim");
 let paraExcluir = null;
 
-function pedirExclusao(id, titulo) {
-  paraExcluir = id;
-  confirmaTexto.textContent = titulo
-    ? `“${titulo}” sai do ar e não tem como desfazer.`
+function pedirExclusao(id) {
+  paraExcluir = artigos.get(id) || null;
+  if (!paraExcluir) return;
+  confirmaTexto.textContent = paraExcluir.titulo
+    ? `“${paraExcluir.titulo}” sai do ar e não tem como desfazer.`
     : "O artigo sai do ar e não tem como desfazer.";
   confirma.hidden = false;
 }
 document.getElementById("cancela").addEventListener("click", () => {
   confirma.hidden = true; paraExcluir = null;
 });
-document.getElementById("confirma-sim").addEventListener("click", async () => {
+botaoConfirma.addEventListener("click", async () => {
   if (!paraExcluir) return;
-  const botao = document.getElementById("confirma-sim");
-  botao.disabled = true;
+  botaoConfirma.disabled = true;
   try {
-    // A capa some junto: Storage cobra por armazenamento, e imagem
-    // órfã de artigo apagado nunca mais é encontrada por ninguém.
-    const d = await getDoc(doc(db, COLECAO, paraExcluir));
-    const caminho = d.exists() ? d.data().capaPath : null;
-    await deleteDoc(doc(db, COLECAO, paraExcluir));
-    if (caminho) { try { await deleteObject(ref(storage, caminho)); } catch (e) { /* já não existia */ } }
+    const { data, error } = await sb.from(TABELA).delete().eq("id", paraExcluir.id).select("id");
+    if (error) throw error;
+    if (!data?.length) throw { code: "42501" };
+    // a capa vai junto: imagem de artigo apagado ninguém mais encontra
+    if (paraExcluir.capa_path) await sb.storage.from(BUCKET).remove([paraExcluir.capa_path]);
     confirma.hidden = true;
     carregarLista();
   } catch (erro) {
     alert(mensagemDeErro(erro));
   } finally {
-    botao.disabled = false; paraExcluir = null;
+    botaoConfirma.disabled = false; paraExcluir = null;
   }
 });
 
@@ -292,23 +353,26 @@ function aviso(el, tipo, texto) {
   el.hidden = false;
 }
 
-/** Mensagens do Firebase são em inglês e falam de "credential". */
+/** As mensagens do Supabase vêm em inglês e em três formatos diferentes
+    (login, banco e arquivos). Aqui viram uma frase só, em português. */
 function mensagemDeErro(erro) {
-  const c = erro?.code || "";
-  if (c.includes("invalid-credential") || c.includes("wrong-password") || c.includes("user-not-found"))
-    return "E-mail ou senha incorretos.";
-  if (c.includes("too-many-requests"))
-    return "Muitas tentativas seguidas. Aguarde alguns minutos.";
-  if (c.includes("invalid-email"))   return "Esse e-mail não parece válido.";
-  if (c.includes("network"))         return "Sem conexão com a internet.";
-  if (c.includes("permission-denied") || c.includes("unauthorized"))
-    return "Sem permissão. Confira se as regras do Firebase foram publicadas.";
-  return erro?.message || "Algo deu errado. Tente de novo.";
-}
+  const codigo = String(erro?.code || "");
+  const texto = String(erro?.message || "");
+  const status = Number(erro?.status || erro?.statusCode || 0);
 
-function escapar(s) {
-  return String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-function escaparAttr(s) {
-  return escapar(s).replace(/"/g, "&quot;");
+  if (codigo === "invalid_credentials" || /invalid login/i.test(texto))
+    return "E-mail ou senha incorretos.";
+  if (codigo === "email_not_confirmed")
+    return "Este e-mail ainda não foi confirmado. Confirme o usuário no Supabase.";
+  if (status === 429 || /rate limit/i.test(texto))
+    return "Muitas tentativas seguidas. Aguarde alguns minutos.";
+  if (/failed to fetch|network/i.test(texto))
+    return "Sem conexão com a internet.";
+  if (codigo === "42501" || status === 403 || /row-level security|permission/i.test(texto))
+    return "Sem permissão para publicar com este e-mail.";
+  if (status === 413 || /too large|maximum allowed size/i.test(texto))
+    return "A imagem ficou grande demais. Tente outra.";
+  if (codigo === "23514")
+    return "O título passa de 160 caracteres ou o texto está vazio.";
+  return texto || "Algo deu errado. Tente de novo.";
 }

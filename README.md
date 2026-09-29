@@ -12,22 +12,21 @@ Recuperação de Crédito, com sede em Salvador/BA.
     privacidade.html    aviso de privacidade (LGPD)
     css/site.css        sistema visual, compartilhado por todas as páginas
     css/painel.css      só o painel
-    js/firebase.js      configuração e utilidades — é aqui que se cola o firebaseConfig
+    js/supabase.js      conexão com o banco e utilidades compartilhadas
     js/site.js          topo, revelação ao rolar e aviso de cookies
     js/artigos.js       vitrine
     js/artigo.js        leitura, com Open Graph e Schema.org Article
     js/painel.js        painel
-    firestore.rules     quem pode ler e escrever artigos
-    storage.rules       quem pode enviar capas
+    supabase/esquema.sql  o banco: tabelas, regras de acesso e bucket das capas
     img/                imagens tratadas e otimizadas
     midia/original/     o que o cliente enviou, sem tratamento
 
 ## Sistema de artigos
 
-O escritório publica sozinho pelo `painel.html`. Para ligar é preciso criar o
-projeto no Firebase e publicar as regras de segurança — **o passo a passo está
-em [FIREBASE.md](FIREBASE.md)**. Sem isso o site funciona normalmente e a seção
-de artigos simplesmente não aparece.
+O escritório publica sozinho pelo `painel.html` (link **Área restrita** no
+rodapé). Os artigos ficam no Supabase. Como publicar, como dar acesso a alguém
+e como o banco é protegido: **[SUPABASE.md](SUPABASE.md)**. Se o banco estiver
+fora do ar, o site funciona normalmente e a seção de artigos não aparece.
 
 ## Sobre as imagens
 

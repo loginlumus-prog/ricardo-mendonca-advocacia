@@ -12,6 +12,8 @@ body.painel{background:var(--breu)}
 .entrada-cx img{height:46px;width:auto;margin-bottom:26px}
 .entrada-h{font-family:var(--serif);font-size:27px;font-weight:300;line-height:1.2}
 .entrada-p{font-size:13px;color:var(--fumo);margin-top:8px;line-height:1.7}
+.entrada-volta{display:block;margin-top:22px;text-align:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fumo-fraco);transition:color .2s}
+.entrada-volta:hover{color:var(--prata)}
 
 /* ══════ FORMULÁRIO ══════ */
 .campo{display:flex;flex-direction:column;gap:6px;margin-top:18px}
@@ -84,8 +86,6 @@ body.painel{background:var(--breu)}
 .previa img{width:100%;height:100%;object-fit:cover}
 .previa span{font-size:11.5px;color:var(--fumo-fraco);text-align:center;padding:16px;line-height:1.6}
 
-.barra-envio{height:3px;background:var(--fio);margin-top:10px;overflow:hidden}
-.barra-envio i{display:block;height:100%;width:0;background:var(--prata);transition:width .25s}
 
 .acoes-fim{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;padding-top:22px;border-top:1px solid var(--fio)}
 

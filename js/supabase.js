@@ -1,51 +1,38 @@
 /* ============================================================
-   FIREBASE — inicialização única, usada por todas as páginas.
+   SUPABASE — conexão única, usada por todas as páginas.
 
-   COMO LIGAR (leia FIREBASE.md para o passo a passo completo):
-   1. Crie o projeto em console.firebase.google.com
-   2. Adicione um app Web e copie o objeto de configuração
-   3. Cole abaixo, no lugar dos valores entre <>
-   4. Publique as regras de firestore.rules e storage.rules
-
-   As chaves abaixo NÃO são segredo — o Firebase as expõe no
-   navegador por projeto. Quem protege os dados são as REGRAS,
-   não a chave. Por isso o passo 4 não é opcional.
+   URL e chave abaixo NÃO são segredo: a chave publicável foi feita
+   para ficar no navegador. Quem protege os dados são as políticas
+   de acesso do banco (supabase/esquema.sql), não a chave.
    ============================================================ */
 
-import { initializeApp }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getFirestore }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-import { getAuth }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getStorage }
-  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+import { createClient }
+  from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/+esm";
 
-export const config = {
-  apiKey:            "<API_KEY>",
-  authDomain:        "<PROJETO>.firebaseapp.com",
-  projectId:         "<PROJETO>",
-  storageBucket:     "<PROJETO>.firebasestorage.app",
-  messagingSenderId: "<SENDER_ID>",
-  appId:             "<APP_ID>"
-};
+const URL_PROJETO = "<URL_DO_PROJETO>";
+const CHAVE       = "<CHAVE_PUBLICAVEL>";
 
 /** Ainda não configurado? As telas avisam em vez de quebrar em silêncio. */
-export const configurado = !String(config.apiKey).startsWith("<");
+export const configurado = !URL_PROJETO.startsWith("<");
 
-let app = null, db = null, auth = null, storage = null;
+export const TABELA = "artigos";
+export const BUCKET = "capas";
 
-if (configurado) {
-  app     = initializeApp(config);
-  db      = getFirestore(app);
-  auth    = getAuth(app);
-  storage = getStorage(app);
+let publico = null;
+
+/** Visitante não faz login, então as páginas públicas não guardam sessão —
+    o aviso de privacidade promete que o navegador só guarda a escolha do aviso. */
+export function clientePublico() {
+  publico ??= createClient(URL_PROJETO, CHAVE, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+  });
+  return publico;
 }
 
-export { app, db, auth, storage };
-
-/** Coleção única dos artigos. */
-export const COLECAO = "artigos";
+/** O painel guarda a sessão, para o editor não digitar a senha a cada visita. */
+export function clienteDoPainel() {
+  return createClient(URL_PROJETO, CHAVE, { auth: { storageKey: "rm-painel" } });
+}
 
 /* ---- utilidades compartilhadas ---------------------------------- */
 
@@ -63,23 +50,25 @@ export function dataCurta(valor) {
   return d.toLocaleDateString("pt-BR");
 }
 
-/** 2026-03-12 — para o atributo datetime e o Schema.org */
+/** 2026-03-12T… — para o atributo datetime e o Schema.org */
 export function dataISO(valor) {
   const d = paraData(valor);
   return d ? d.toISOString() : "";
 }
 
-/** Aceita Timestamp do Firestore, Date, número ou string. */
 function paraData(valor) {
   if (!valor) return null;
-  if (typeof valor.toDate === "function") return valor.toDate();
   const d = valor instanceof Date ? valor : new Date(valor);
   return isNaN(d) ? null : d;
 }
 
 /** Texto puro a partir do corpo, para resumo e meta description. */
 export function resumir(texto, limite = 160) {
-  const limpo = String(texto || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  const limpo = String(texto || "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/^\s*(#{2,3}|>|[-•*]|\d+[.)])\s+/gm, "")
+    .replace(/\*\*?|\[|\]\([^)]*\)/g, "")
+    .replace(/\s+/g, " ").trim();
   if (limpo.length <= limite) return limpo;
   return limpo.slice(0, limpo.lastIndexOf(" ", limite)) + "…";
 }
@@ -133,4 +122,10 @@ export function paraHTML(texto) {
   }
   fecharLista();
   return saida.join("\n");
+}
+
+export function escapar(s) {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }

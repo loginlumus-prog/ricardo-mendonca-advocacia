@@ -1,0 +1,36 @@
+name: Manter o banco acordado
+
+# Projeto gratuito do Supabase pausa sozinho depois de 7 dias sem uso,
+# e aí a seção de artigos some do site. Uma consulta por dia basta
+# para ele nunca chegar lá, mesmo numa semana sem visita nenhuma.
+
+on:
+  schedule:
+    - cron: "17 11 * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  consultar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Consulta leve ao banco
+        # URL e chave vêm do próprio site: são públicas e ficam num lugar só
+        run: |
+          URL=$(grep -oP 'URL_PROJETO\s*=\s*"\K[^"]+' js/supabase.js)
+          CHAVE=$(grep -oP 'CHAVE\s*=\s*"\K[^"]+' js/supabase.js)
+          case "$URL" in "<"*) echo "Supabase ainda não configurado"; exit 0;; esac
+          curl -fsS "$URL/rest/v1/artigos?select=id&limit=1" -H "apikey: $CHAVE" -o /dev/null
+          echo "Banco respondeu."
+
+      - name: Impede o GitHub de desligar este agendamento
+        # O GitHub desliga agendamentos de repositório sem commit há 60 dias.
+        # Reativar pela API zera essa contagem.
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/manter-supabase.yml/enable"
+        env:
+          GH_TOKEN: ${{ github.token }}

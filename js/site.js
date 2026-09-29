@@ -18,7 +18,7 @@
    observada, e sem isso o observador fica disparando a cada scroll.
 
    Fica exposto em window.RM.revelar porque os cards de artigo chegam
-   do Firebase DEPOIS deste script rodar. Sem essa porta, eles nasceriam
+   do banco DEPOIS deste script rodar. Sem essa porta, eles nasceriam
    com opacity:0 e nunca seriam observados — invisíveis para sempre.   */
 const RM = (window.RM = window.RM || {});
 
@@ -43,9 +43,9 @@ const RM = (window.RM = window.RM || {});
 })();
 
 /* ---- consentimento de cookies (LGPD) ----------------------------
-   O site não usa cookie de rastreamento hoje; o aviso existe porque
-   o formulário de contato e o Firebase gravam dado no navegador.
-   Guardamos só a decisão, em localStorage, sem identificar ninguém.  */
+   O site não usa cookie de rastreamento; o aviso existe por
+   transparência, como pede a LGPD. Guardamos só a decisão, em
+   localStorage, sem identificar ninguém.  */
 (function cookies() {
   const CHAVE = "rm-cookies";
   const caixa = document.getElementById("cookies");
