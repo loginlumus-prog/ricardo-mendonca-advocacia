@@ -476,6 +476,75 @@
   </div>
 </section>
 
+<!-- ══════════ SEDE ══════════
+     Fotos reais do escritório. Clicar abre a foto ampliada (js/site.js);
+     sem JavaScript, o link abre a imagem direto. -->
+<section class="bloco gut" id="sede" style="background:var(--marinho)">
+  <div class="limite">
+    <div class="sede-cab">
+      <div>
+        <span class="chapeu mudo revela">A sede</span>
+        <h2 class="olho revela atraso-1" style="margin-top:16px">Estrutura própria<br>em <em>Salvador.</em></h2>
+      </div>
+      <p class="corpo revela atraso-2">
+        No Edifício Empresarial Simonsen, no Caminho das Árvores, o escritório ocupa as
+        salas 301 a 314: recepção, salas de reunião e de atendimento e espaço de trabalho
+        para a equipe que acompanha cada processo.
+      </p>
+    </div>
+    <div class="galeria" data-galeria>
+      <figure class="g-item g-recepcao revela">
+        <a href="img/sede-recepcao.webp">
+          <img src="img/sede-recepcao-900.webp" srcset="img/sede-recepcao-900.webp 900w, img/sede-recepcao.webp 1800w"
+               sizes="(max-width:760px) 100vw, 60vw" width="1800" height="1233" loading="lazy"
+               alt="Recepção do escritório, com o logotipo Ricardo Mendonça Advogados Associados na parede">
+        </a>
+        <figcaption>Recepção</figcaption>
+      </figure>
+      <figure class="g-item g-reunioes revela atraso-1">
+        <a href="img/sede-reunioes.webp">
+          <img src="img/sede-reunioes-900.webp" srcset="img/sede-reunioes-900.webp 900w, img/sede-reunioes.webp 1800w"
+               sizes="(max-width:760px) 100vw, 60vw" width="1800" height="1233" loading="lazy"
+               alt="Sala de reuniões com mesa de madeira e cadeiras executivas">
+        </a>
+        <figcaption>Sala de reuniões</figcaption>
+      </figure>
+      <figure class="g-item g-atendimento revela atraso-2">
+        <a href="img/sede-atendimento.webp">
+          <img src="img/sede-atendimento-900.webp" srcset="img/sede-atendimento-900.webp 900w, img/sede-atendimento.webp 1800w"
+               sizes="(max-width:760px) 100vw, 60vw" width="1800" height="1233" loading="lazy"
+               alt="Sala de atendimento com mesa em L e cadeiras para clientes">
+        </a>
+        <figcaption>Sala de atendimento</figcaption>
+      </figure>
+      <figure class="g-item g-sala revela">
+        <a href="img/sede-sala.webp">
+          <img src="img/sede-sala-900.webp" srcset="img/sede-sala-900.webp 900w, img/sede-sala.webp 1800w"
+               sizes="(max-width:760px) 100vw, 60vw" width="1800" height="1233" loading="lazy"
+               alt="Sala de trabalho com estações e janela para a cidade">
+        </a>
+        <figcaption>Sala de trabalho</figcaption>
+      </figure>
+      <figure class="g-item g-equipe revela atraso-1">
+        <a href="img/sede-equipe.webp">
+          <img src="img/sede-equipe-900.webp" srcset="img/sede-equipe-900.webp 900w, img/sede-equipe.webp 1800w"
+               sizes="(max-width:760px) 100vw, 60vw" width="1800" height="1233" loading="lazy"
+               alt="Área de trabalho da equipe, com estações individuais">
+        </a>
+        <figcaption>Área da equipe</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<dialog class="lente" id="lente" aria-label="Foto ampliada">
+  <img alt="">
+  <p class="lente-leg"></p>
+  <button class="lente-x" data-fechar aria-label="Fechar">&times;</button>
+  <button class="lente-seta ant" data-ant aria-label="Foto anterior">&lsaquo;</button>
+  <button class="lente-seta prox" data-prox aria-label="Próxima foto">&rsaquo;</button>
+</dialog>
+
 <!-- ══════════ CONTATO ══════════ -->
 <section class="bloco gut" id="contato">
   <div class="limite duas topo-align">
@@ -543,6 +612,7 @@
         <a href="#socios">Sócios</a>
         <a href="#atuacao">Atuação</a>
         <a href="artigos.html">Artigos</a>
+        <a href="#sede">A sede</a>
         <a href="#contato">Contato</a>
       </div>
       <div class="rod">

@@ -1,2 +1,5 @@
 midia/gerado/*.png
 .claude/
+
+# fotos enviadas pelo cliente em PNG (45 MB) — as versões web estão em img/sede-*
+fotos do escritorio/
