@@ -290,7 +290,7 @@ body.com-cookies .zap{transform:translateY(-96px)}
    esconder como o escritório realmente é. */
 .sede-cab{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,72px);align-items:end}
 @media (max-width:920px){.sede-cab{grid-template-columns:1fr}}
-.galeria{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:clamp(150px,19vw,260px);gap:10px;margin-top:clamp(36px,5vw,60px)}
+.galeria{display:grid;grid-template-columns:repeat(12,1fr);grid-auto-rows:clamp(170px,23vw,330px);gap:10px;margin-top:clamp(36px,5vw,60px)}
 .g-item{position:relative;margin:0;overflow:hidden;background:var(--marinho-alto);border:1px solid var(--fio)}
 .g-item a{display:block;height:100%;cursor:zoom-in}
 .g-item img{width:100%;height:100%;object-fit:cover;filter:saturate(.86);transition:transform 1.1s cubic-bezier(.16,1,.3,1),filter .6s}
@@ -298,13 +298,14 @@ body.com-cookies .zap{transform:translateY(-96px)}
 .g-item figcaption{position:absolute;left:0;right:0;bottom:0;padding:36px 18px 14px;pointer-events:none;
   background:linear-gradient(0deg,rgba(10,13,20,.84),rgba(10,13,20,0));
   font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--prata-luz)}
-.g-recepcao{grid-column:span 7;grid-row:span 2}
+.g-recepcao{grid-column:span 7}
 .g-recepcao img{object-position:42% 40%}
-.g-reunioes,.g-equipe{grid-column:span 5}
+.g-reunioes,.g-diretoria{grid-column:span 5}
+.g-equipe{grid-column:span 7}
 @media (max-width:760px){
   .galeria{grid-template-columns:1fr 1fr;grid-auto-rows:clamp(120px,36vw,200px);gap:8px}
   .g-item{grid-column:span 1}
-  .g-recepcao{grid-column:span 2;grid-row:span 2}
+  .g-recepcao,.g-equipe{grid-column:span 2}
   .g-item figcaption{padding:28px 12px 10px;font-size:9px;letter-spacing:.18em}
 }
 @media (prefers-reduced-motion:reduce){.g-item img{transition:none}.g-item:hover img{transform:none}}
