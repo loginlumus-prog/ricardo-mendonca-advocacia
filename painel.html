@@ -51,6 +51,11 @@
 
   <main class="painel-corpo">
 
+    <nav class="abas" aria-label="Seções do painel">
+      <button type="button" class="aba ativa" data-aba="artigos">Artigos</button>
+      <button type="button" class="aba" data-aba="galeria">Galeria</button>
+    </nav>
+
     <!-- ── LISTA ── -->
     <section id="tela-lista">
       <div class="painel-cab">
@@ -128,6 +133,77 @@
         </aside>
       </form>
     </section>
+
+    <!-- ── GALERIA DE EVENTOS ── -->
+    <section id="tela-galeria" hidden>
+
+      <div id="g-lista">
+        <div class="painel-cab">
+          <div>
+            <span class="chapeu mudo">Eventos</span>
+            <h1 class="painel-h" style="margin-top:8px">Galeria</h1>
+          </div>
+          <button type="button" id="g-novo" class="bt forte">Novo álbum</button>
+        </div>
+        <div id="g-albuns" class="lista"></div>
+      </div>
+
+      <div id="g-editor" hidden>
+        <div class="painel-cab">
+          <div>
+            <button type="button" id="g-voltar" class="chapeu mudo" style="padding:0">&larr; Todos os álbuns</button>
+            <h1 id="g-titulo-editor" class="painel-h" style="margin-top:8px">Novo álbum</h1>
+          </div>
+        </div>
+
+        <form id="g-form" novalidate>
+          <div class="g-dados">
+            <div class="campo" style="margin-top:0">
+              <label for="g-titulo">Nome do evento</label>
+              <input id="g-titulo" type="text" maxlength="120" placeholder="Ex.: Halloween 2026">
+            </div>
+            <div class="campo" style="margin-top:0">
+              <label for="g-data">Data do evento</label>
+              <input id="g-data" type="date">
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="g-desc">Descrição <span style="text-transform:none;letter-spacing:0">(opcional)</span></label>
+            <textarea id="g-desc" rows="3" maxlength="600" style="min-height:84px"
+              placeholder="Uma ou duas frases sobre o evento."></textarea>
+          </div>
+
+          <div class="campo">
+            <label style="display:flex;gap:10px;align-items:center;cursor:pointer;text-transform:none;letter-spacing:0;font-size:13px;color:var(--marfim)">
+              <input id="g-publicado" type="checkbox" checked style="width:auto">
+              Publicar no site
+            </label>
+            <span class="dica">Desmarcado, o álbum fica salvo como rascunho e só aparece aqui.</span>
+          </div>
+
+          <div class="g-fotos-cab">
+            <h4>Fotos</h4>
+            <span id="g-conta" class="dica"></span>
+          </div>
+          <label class="g-envio" for="g-arquivos">
+            <strong>Escolher fotos</strong>
+            <span>Pode marcar várias de uma vez. JPG, PNG ou WebP, até 60 por álbum. O painel reduz o tamanho sozinho.</span>
+            <input id="g-arquivos" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+          </label>
+          <div id="g-fotos" class="g-fotos"></div>
+
+          <p class="dica" style="margin-top:18px">
+            Publique apenas fotos de pessoas que autorizaram o uso da imagem.
+          </p>
+          <p id="g-recado" class="recado" hidden role="alert"></p>
+
+          <div class="acoes-fim">
+            <button type="submit" id="g-salvar" class="bt forte">Salvar álbum</button>
+          </div>
+        </form>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -139,6 +215,18 @@
     <div class="confirma-acao">
       <button id="cancela" class="bt mini">Cancelar</button>
       <button id="confirma-sim" class="bt mini forte">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<!-- confirmação de exclusão de álbum -->
+<div id="g-confirma" class="confirma" hidden role="dialog" aria-modal="true" aria-labelledby="g-confirma-tit">
+  <div class="confirma-cx">
+    <h3 id="g-confirma-tit">Excluir este álbum?</h3>
+    <p id="g-confirma-texto"></p>
+    <div class="confirma-acao">
+      <button type="button" id="g-cancela" class="bt mini">Cancelar</button>
+      <button type="button" id="g-confirma-sim" class="bt mini forte">Excluir</button>
     </div>
   </div>
 </div>

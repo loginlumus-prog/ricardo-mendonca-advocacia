@@ -21,6 +21,24 @@ O texto aceita marcações simples, pelos botões da barra: negrito, itálico,
 subtítulo, citação, lista e link. A capa pode ser foto de celular — o painel
 reduz a imagem antes de enviar.
 
+## Galeria de eventos
+
+Também pela Área restrita, na aba **Galeria**: um álbum por evento.
+
+1. **Novo álbum** → nome do evento (ex.: "Halloween 2026"), data e, se quiser, uma descrição
+2. **Escolher fotos** → pode marcar várias de uma vez (até 60 por álbum)
+3. Em cada foto, escrever a **legenda** (opcional). A primeira foto é a capa do álbum;
+   as setas ← → mudam a ordem e **Remover** tira a foto
+4. **Salvar álbum** → aparece em `galeria.html`, com a foto ampliada ao clicar
+
+As fotos são reduzidas no próprio navegador antes de subir, então pode ser direto do celular.
+Para editar depois (trocar legenda, acrescentar ou tirar fotos), é só abrir o álbum de novo.
+Desmarcar "Publicar no site" deixa o álbum como rascunho. Excluir o álbum apaga também as fotos.
+
+Os álbuns e as fotos moram nas tabelas `albuns` e `fotos` e no bucket `galeria`
+(definidos no fim de [`supabase/esquema.sql`](supabase/esquema.sql)), com a mesma regra dos
+artigos: visitante só lê o que está publicado; escrever é só de quem está em `editores`.
+
 ## Dar acesso a alguém
 
 São duas coisas, e as duas são necessárias:

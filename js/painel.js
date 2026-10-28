@@ -9,6 +9,7 @@
 
 import { clienteDoPainel, configurado, TABELA, BUCKET, dataCurta, resumir, escapar }
   from "./supabase.js";
+import { iniciarGaleria } from "./painel-galeria.js";
 
 const tela = {
   entrada: document.getElementById("tela-entrada"),
@@ -29,6 +30,8 @@ if (!configurado) {
 }
 
 const sb = clienteDoPainel();
+const galeria = iniciarGaleria({ sb, aviso, mensagemDeErro });
+const telaGaleria = document.getElementById("tela-galeria");
 const artigos = new Map();   // o que está na lista, por id
 let editando = null;         // artigo aberto no editor, ou null para novo
 let capaNova = null;         // imagem já reduzida, esperando o "Publicar"
@@ -85,7 +88,25 @@ async function mudouSessao(sessao) {
   document.getElementById("quem").textContent = sessao.user.email;
   tela.entrada.hidden = true;
   tela.app.hidden = false;
-  carregarLista();
+  abrirAba("artigos");
+}
+
+/* ══════ ABAS ══════ */
+document.querySelectorAll("[data-aba]").forEach((b) =>
+  b.addEventListener("click", () => abrirAba(b.dataset.aba)));
+
+function abrirAba(nome) {
+  document.querySelectorAll("[data-aba]").forEach((b) =>
+    b.classList.toggle("ativa", b.dataset.aba === nome));
+  if (nome === "galeria") {
+    tela.lista.hidden = true;
+    tela.editor.hidden = true;
+    telaGaleria.hidden = false;
+    galeria.abrir();
+  } else {
+    telaGaleria.hidden = true;
+    carregarLista();
+  }
 }
 
 /* ══════ LISTA ══════ */

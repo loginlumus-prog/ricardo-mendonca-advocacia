@@ -316,6 +316,7 @@ body.com-cookies .zap{transform:translateY(-96px)}
 .lente::backdrop{background:rgba(6,8,13,.6)}
 .lente img{max-width:min(90vw,1600px);max-height:78svh;width:auto;height:auto;border:1px solid var(--fio)}
 .lente-leg{position:absolute;left:0;right:0;bottom:clamp(18px,5vh,40px);text-align:center;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--prata)}
+.lente-leg.longa{left:50%;right:auto;transform:translateX(-50%);width:min(88vw,760px);font-size:14px;letter-spacing:.01em;text-transform:none;line-height:1.6;color:var(--prata-luz)}
 .lente-x,.lente-seta{position:absolute;display:grid;place-items:center;color:var(--prata-luz);transition:color .2s,background .2s}
 .lente-x:hover,.lente-seta:hover{color:#fff;background:rgba(255,255,255,.06)}
 .lente-x{top:14px;right:14px;width:48px;height:48px;font-size:30px;line-height:1}
@@ -338,6 +339,19 @@ html:has(.lente[open]){overflow:hidden}
 .rota:hover{color:var(--prata-luz);border-color:var(--prata)}
 /* numa coluna só não há o que acompanhar: altura fixa */
 @media (max-width:920px){.mapa{flex:none;height:260px}}
+
+/* ══════ ÁLBUM ══════
+   Fotos de evento têm proporções variadas (retrato, paisagem). Em colunas,
+   cada foto mantém a sua proporção sem ser cortada. */
+.album-fotos{columns:3;column-gap:14px}
+@media (max-width:900px){.album-fotos{columns:2}}
+@media (max-width:520px){.album-fotos{columns:1}}
+.f-item{break-inside:avoid;margin:0 0 14px}
+.f-item a{display:block;overflow:hidden;border:1px solid var(--fio);background:var(--marinho-alto);cursor:zoom-in}
+.f-item img{display:block;width:100%;height:auto;transition:transform 1s cubic-bezier(.16,1,.3,1),filter .5s;filter:saturate(.92)}
+.f-item a:hover img{transform:scale(1.025);filter:saturate(1)}
+.f-item figcaption{padding:9px 2px 0;font-size:12.5px;line-height:1.6;color:var(--fumo)}
+@media (prefers-reduced-motion:reduce){.f-item img{transition:none}.f-item a:hover img{transform:none}}
 
 /* ══════ RODAPÉ ══════ */
 .rodape{border-top:1px solid var(--fio);padding-top:52px;padding-bottom:34px}

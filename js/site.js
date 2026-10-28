@@ -76,6 +76,58 @@ document.querySelectorAll("[data-ano]").forEach((e) => {
 });
 
 
+/* ---- fotos ampliadas (sede e álbuns) -----------------------------
+   Os links ficam dentro de um [data-galeria]. O clique é capturado no
+   documento, e não em cada link, porque as fotos dos álbuns chegam do
+   banco depois deste script rodar. Sem <dialog> (navegador muito antigo)
+   o link segue abrindo a foto direto, que é o HTML puro.              */
+(function lente() {
+  const lente = document.getElementById("lente");
+  if (!lente || typeof lente.showModal !== "function") return;
+
+  const img = lente.querySelector("img");
+  const legenda = lente.querySelector(".lente-leg");
+  let links = [], atual = 0;
+
+  const mostrar = (i) => {
+    atual = (i + links.length) % links.length;
+    const a = links[atual];
+    img.src = a.href;
+    img.alt = a.querySelector("img").alt;
+    const texto = a.closest("figure")?.querySelector("figcaption")?.textContent.trim() || "";
+    legenda.textContent = texto;
+    legenda.hidden = !texto;
+    // legenda de frase não combina com a caixa-alta espaçada dos títulos de sala
+    legenda.classList.toggle("longa", texto.length > 36);
+  };
+
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest?.("[data-galeria] a");
+    if (!a) return;
+    links = [...document.querySelectorAll("[data-galeria] a")];
+    const i = links.indexOf(a);
+    if (i < 0) return;
+    e.preventDefault();
+    mostrar(i);
+    lente.showModal();
+  });
+  lente.querySelector("[data-fechar]").addEventListener("click", () => lente.close());
+  lente.querySelector("[data-ant]").addEventListener("click", () => mostrar(atual - 1));
+  lente.querySelector("[data-prox]").addEventListener("click", () => mostrar(atual + 1));
+  // clique fora da foto fecha; Esc o próprio <dialog> já trata
+  lente.addEventListener("click", (e) => { if (e.target === lente) lente.close(); });
+  lente.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft")  mostrar(atual - 1);
+    if (e.key === "ArrowRight") mostrar(atual + 1);
+  });
+})();
+
+/* ---- ano corrente no rodapé ------------------------------------- */
+document.querySelectorAll("[data-ano]").forEach((e) => {
+  e.textContent = String(new Date().getFullYear());
+});
+
+
 /* ---- galeria da sede: foto ampliada -----------------------------
    Sem <dialog> (navegador muito antigo) os links seguem abrindo a
    foto direto, que é o comportamento do HTML puro.                  */

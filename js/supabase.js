@@ -17,6 +17,7 @@ export const configurado = !URL_PROJETO.startsWith("<");
 
 export const TABELA = "artigos";
 export const BUCKET = "capas";
+export const BUCKET_GALERIA = "galeria";
 
 let publico = null;
 
@@ -60,6 +61,17 @@ function paraData(valor) {
   if (!valor) return null;
   const d = valor instanceof Date ? valor : new Date(valor);
   return isNaN(d) ? null : d;
+}
+
+/** Data de evento vem como "2026-10-31", sem horário. new Date("2026-10-31") a
+    trata como meia-noite UTC e, no Brasil, mostraria dia 30. Aqui vira data local. */
+export function dataDoEvento(valor, formato = "longa") {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(valor || "");
+  if (!m) return "";
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  return formato === "curta"
+    ? d.toLocaleDateString("pt-BR")
+    : d.toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
 }
 
 /** Texto puro a partir do corpo, para resumo e meta description. */
