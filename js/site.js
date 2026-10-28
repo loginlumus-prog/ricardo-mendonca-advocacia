@@ -104,55 +104,14 @@ document.querySelectorAll("[data-ano]").forEach((e) => {
   document.addEventListener("click", (e) => {
     const a = e.target.closest?.("[data-galeria] a");
     if (!a) return;
-    links = [...document.querySelectorAll("[data-galeria] a")];
+    // as setas percorrem só a galeria clicada: na home há duas (sede e evento)
+    links = [...a.closest("[data-galeria]").querySelectorAll("a")];
     const i = links.indexOf(a);
     if (i < 0) return;
     e.preventDefault();
     mostrar(i);
     lente.showModal();
   });
-  lente.querySelector("[data-fechar]").addEventListener("click", () => lente.close());
-  lente.querySelector("[data-ant]").addEventListener("click", () => mostrar(atual - 1));
-  lente.querySelector("[data-prox]").addEventListener("click", () => mostrar(atual + 1));
-  // clique fora da foto fecha; Esc o próprio <dialog> já trata
-  lente.addEventListener("click", (e) => { if (e.target === lente) lente.close(); });
-  lente.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft")  mostrar(atual - 1);
-    if (e.key === "ArrowRight") mostrar(atual + 1);
-  });
-})();
-
-/* ---- ano corrente no rodapé ------------------------------------- */
-document.querySelectorAll("[data-ano]").forEach((e) => {
-  e.textContent = String(new Date().getFullYear());
-});
-
-
-/* ---- galeria da sede: foto ampliada -----------------------------
-   Sem <dialog> (navegador muito antigo) os links seguem abrindo a
-   foto direto, que é o comportamento do HTML puro.                  */
-(function galeria() {
-  const lente = document.getElementById("lente");
-  const links = [...document.querySelectorAll("[data-galeria] a")];
-  if (!lente || !links.length || typeof lente.showModal !== "function") return;
-
-  const img = lente.querySelector("img");
-  const legenda = lente.querySelector(".lente-leg");
-  let atual = 0;
-
-  const mostrar = (i) => {
-    atual = (i + links.length) % links.length;
-    const a = links[atual];
-    img.src = a.href;
-    img.alt = a.querySelector("img").alt;
-    legenda.textContent = a.closest("figure").querySelector("figcaption")?.textContent || "";
-  };
-
-  links.forEach((a, i) => a.addEventListener("click", (e) => {
-    e.preventDefault();
-    mostrar(i);
-    lente.showModal();
-  }));
   lente.querySelector("[data-fechar]").addEventListener("click", () => lente.close());
   lente.querySelector("[data-ant]").addEventListener("click", () => mostrar(atual - 1));
   lente.querySelector("[data-prox]").addEventListener("click", () => mostrar(atual + 1));

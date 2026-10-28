@@ -538,6 +538,22 @@
   </div>
 </section>
 
+<!-- ══════════ GALERIA (EVENTOS) ══════════
+     Fotos do evento mais recente publicado pela Área restrita.
+     Some sozinha se não houver álbum publicado — ver js/galeria-home.js. -->
+<section class="bloco gut" id="secao-galeria">
+  <div class="limite">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+      <div>
+        <span class="chapeu mudo revela">Galeria</span>
+        <h2 class="olho revela atraso-1" style="margin-top:16px">Eventos e <em>momentos.</em></h2>
+      </div>
+      <a href="galeria.html" class="bt revela atraso-2">Ver toda a galeria</a>
+    </div>
+    <div id="home-album" hidden></div>
+  </div>
+</section>
+
 <dialog class="lente" id="lente" aria-label="Foto ampliada">
   <img alt="">
   <p class="lente-leg"></p>
@@ -669,5 +685,6 @@
 
 <script src="js/site.js" defer></script>
 <script type="module" src="js/artigos.js"></script>
+<script type="module" src="js/galeria-home.js"></script>
 </body>
 </html>

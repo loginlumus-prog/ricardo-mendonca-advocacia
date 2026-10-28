@@ -340,6 +340,19 @@ html:has(.lente[open]){overflow:hidden}
 /* numa coluna só não há o que acompanhar: altura fixa */
 @media (max-width:920px){.mapa{flex:none;height:260px}}
 
+/* ══════ GALERIA NA HOME ══════
+   Mesmo mosaico da sede, em grade regular: as fotos de evento têm
+   proporções variadas e aqui todas viram 4:3. A legenda completa
+   aparece na foto ampliada; no quadro ela fica numa linha só. */
+.home-album-cab{display:flex;align-items:baseline;gap:8px 18px;flex-wrap:wrap;margin-top:clamp(30px,4vw,44px)}
+.home-album-tit{font-family:var(--serif);font-size:clamp(21px,2.2vw,26px);font-weight:400;color:var(--marfim);transition:color .2s}
+.home-album-tit:hover{color:var(--prata-luz)}
+.home-fotos{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}
+@media (max-width:760px){.home-fotos{grid-template-columns:1fr 1fr;gap:8px}}
+.home-fotos .g-item{aspect-ratio:4/3}
+.home-fotos .g-item figcaption{text-transform:none;letter-spacing:.02em;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.home-album-mais{margin-top:18px}
+
 /* ══════ ÁLBUM ══════
    Fotos de evento têm proporções variadas (retrato, paisagem). Em colunas,
    cada foto mantém a sua proporção sem ser cortada. */
